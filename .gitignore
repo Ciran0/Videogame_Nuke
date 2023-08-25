@@ -1,4 +1,4 @@
-# This .gitignore file should be placed at the root of your Unity project directory
+# This .gitignore file should not be placed at the root of your Unity project directory but in the parent folder
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
