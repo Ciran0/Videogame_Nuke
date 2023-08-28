@@ -152,11 +152,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7907ae6e04c6be4f94afea7a128753e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 10
-  dashSpeed: 50
-  dashLenght: 4
-  dashRecovery: 1
-  dashMaxNumber: 4
+  walkSpeed: 20
+  dashSpeed: 35
+  dashLenght: 8
+  dashRecovery: 0.5
+  dashMaxNumber: 3
 --- !u!4 &113250218
 Transform:
   m_ObjectHideFlags: 0
