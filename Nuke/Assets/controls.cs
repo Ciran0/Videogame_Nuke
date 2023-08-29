@@ -24,6 +24,7 @@ public class controls : MonoBehaviour
     public float quickStepMaxSpeed = 0f;
     public float quickStepMinSpeed = 0f;
     public float quickstepLenght = 0f;
+    public float quickstepCooldown = 0f;
 
     int remainingDashes = 0;
     float dashRecoveryTimer = 0f;
@@ -40,6 +41,7 @@ public class controls : MonoBehaviour
     float quickstepDownTimer = 0f;
     float quickstepLeftTimer = 0f;
     float quickstepRightTimer = 0f;
+    float quickstepCooldownTimer = 0f;
 
     void Start() {
         body = gameObject.GetComponent<Rigidbody2D>();
@@ -47,16 +49,17 @@ public class controls : MonoBehaviour
 
     void OnDrawGizmos() 
     {
-        if (dashing || quickstepping) {
+        if (dashing || remainingDashes <= 0) {
             Gizmos.color = Color.magenta;
         } else {
+
             Gizmos.color = Color.green;
         }
         Gizmos.DrawRay(transform.position, dashDirection * -dashLenght);
         Gizmos.color = Color.magenta;
-        if (dashing) {
-            Gizmos.color = Color.green;
-        } else if (quickstepping) {
+        if (quickstepping || quickstepCooldownTimer > 0) {
+            Gizmos.color = Color.magenta;
+        } else {
             Gizmos.color = Color.blue;
         }
         Gizmos.DrawWireSphere(transform.position, quickstepLenght);
@@ -118,45 +121,48 @@ public class controls : MonoBehaviour
         }
 
         //quickstep start
-        if (moveY > 0 && !quickstepping) {
-            if (quickstepUpTimer < quickstepDelay && quickstepUpTimer > 0) {
-                quickstepDirection = new Vector2(0, 1);
-                quickstepping = true;
+        if (!quickstepping && quickstepCooldownTimer <= 0) {
+            if (moveY > 0) {
+                if (quickstepUpTimer < quickstepDelay && quickstepUpTimer > 0) {
+                    quickstepDirection = new Vector2(0, 1);
+                    quickstepping = true;
+                }
+                quickstepUpTimer = quickstepDelay;
+            } else if (quickstepUpTimer > 0) {
+                quickstepUpTimer -= Time.deltaTime;
             }
-            quickstepUpTimer = quickstepDelay;
-        } else if (quickstepUpTimer > 0) {
-            quickstepUpTimer -= Time.deltaTime;
-        }
 
-        if (moveY < 0 && !quickstepping) {
-            if (quickstepDownTimer < quickstepDelay && quickstepDownTimer > 0) {
-                quickstepDirection = new Vector2(0, -1);
-                quickstepping = true;
+            if (moveY < 0) {
+                if (quickstepDownTimer < quickstepDelay && quickstepDownTimer > 0) {
+                    quickstepDirection = new Vector2(0, -1);
+                    quickstepping = true;
+                }
+                quickstepDownTimer = quickstepDelay;
+            } else if (quickstepDownTimer > 0) {
+                quickstepDownTimer -= Time.deltaTime;
             }
-            quickstepDownTimer = quickstepDelay;
-        } else if (quickstepDownTimer > 0) {
-            quickstepDownTimer -= Time.deltaTime;
-        }
 
-        if (moveX > 0 && !quickstepping) {
-            if (quickstepLeftTimer < quickstepDelay && quickstepLeftTimer > 0) {
-                quickstepDirection = new Vector2(1, 0);
-                quickstepping = true;
+            if (moveX > 0) {
+                if (quickstepLeftTimer < quickstepDelay && quickstepLeftTimer > 0) {
+                    quickstepDirection = new Vector2(1, 0);
+                    quickstepping = true;
+                }
+                quickstepLeftTimer = quickstepDelay;
+            } else if (quickstepLeftTimer > 0) {
+                quickstepLeftTimer -= Time.deltaTime;
             }
-            quickstepLeftTimer = quickstepDelay;
-        } else if (quickstepLeftTimer > 0) {
-            quickstepLeftTimer -= Time.deltaTime;
-        }
 
-        if (moveX < 0 && !quickstepping) {
-            if (quickstepRightTimer < quickstepDelay && quickstepRightTimer > 0) {
-                quickstepDirection = new Vector2(-1, 0);
-                quickstepping = true;
+            if (moveX < 0) {
+                if (quickstepRightTimer < quickstepDelay && quickstepRightTimer > 0) {
+                    quickstepDirection = new Vector2(-1, 0);
+                    quickstepping = true;
+                }
+                quickstepRightTimer = quickstepDelay;
+            } else if (quickstepRightTimer > 0) {
+                quickstepRightTimer -= Time.deltaTime;
             }
-            quickstepRightTimer = quickstepDelay;
-        } else if (quickstepRightTimer > 0) {
-            quickstepRightTimer -= Time.deltaTime;
         }
+        
 
         //quickstep move
         if (quickstepping) {
@@ -174,6 +180,12 @@ public class controls : MonoBehaviour
             quickstepDownTimer = 0;
             quickstepLeftTimer = 0;
             quickstepRightTimer = 0;
+            quickstepCooldownTimer = quickstepCooldown;
+        }
+
+        //quickstep recovery
+        if (quickstepCooldownTimer > 0) {
+            quickstepCooldownTimer -= Time.deltaTime;
         }
     }
 }
