@@ -41,19 +41,18 @@ public class controls : MonoBehaviour
 
         //walk movement
         if (!dashing) {
-            Vector3 tmp = new Vector3(Input.GetAxis("Horizontal") * walkSpeed * Time.deltaTime, Input.GetAxis("Vertical") * walkSpeed  * Time.deltaTime, 0f);
-            body.MovePosition(transform.position + tmp);
+            Vector2 tmp = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
+            body.velocity = tmp * walkSpeed;
         }
     
         //dash motion
         if (dashing) {
             float curentSpeed = (Mathf.Pow(Mathf.Cos(dashingLenght*Mathf.PI/2*dashLenght),2)*(dashMaxSpeed-dashMinSpeed))+dashMinSpeed;
-            Vector3 motion = new Vector3(-curentSpeed * Time.deltaTime * dashDirection.x, -curentSpeed * Time.deltaTime * dashDirection.y, 0f);
-            body.MovePosition(transform.position + motion);
-            dashingLenght += motion.magnitude;
+            body.velocity = -dashDirection*curentSpeed;
+            dashingLenght += (-dashDirection*curentSpeed).magnitude * Time.deltaTime;
         } else {
-            Vector3 mouseOffset = transform.position - mouseWorldPos;
-            dashDirection = new Vector3(mouseOffset.x, mouseOffset.y, 0f).normalized;
+            Vector2 mouseOffset = transform.position - mouseWorldPos;
+            dashDirection = new Vector2(mouseOffset.x, mouseOffset.y).normalized;
         }
 
         //dash activation

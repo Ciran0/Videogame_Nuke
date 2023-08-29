@@ -155,10 +155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f7907ae6e04c6be4f94afea7a128753e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 35
-  dashMaxSpeed: 40
-  dashMinSpeed: 5
-  dashLenght: 8
+  walkSpeed: 5
+  dashMaxSpeed: 55
+  dashMinSpeed: 35
+  dashLenght: 5
   dashRecovery: 0.5
   dashMaxNumber: 4
   dashChainDelay: 10
@@ -187,7 +187,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!58 &285358538
 CircleCollider2D:
@@ -691,7 +691,7 @@ GameObject:
   - component: {fileID: 1879563242}
   - component: {fileID: 1879563246}
   m_Layer: 0
-  m_Name: Dynamic Sprite
+  m_Name: DumbEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -838,6 +838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 342d7d5007f5c7a4f8894c4ba1266982, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 20
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
