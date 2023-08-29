@@ -5,22 +5,41 @@ using UnityEngine;
 public class controls : MonoBehaviour
 {
 
+    [Tooltip("default movement speed [m/s]")]
     public float walkSpeed = 0f;
+    [Tooltip("initial speed of dash [m/s]")]
     public float dashMaxSpeed = 0f;
+    [Tooltip("end speed of dash [m/s]")]
     public float dashMinSpeed = 0f;
+    [Tooltip("lenght of dash [m]")]
     public float dashLenght = 0f;
+    [Tooltip("dash counter cooldown [s]")]
     public float dashRecovery = 0f;
+    [Tooltip("max number of consequitive dashes")]
     public int dashMaxNumber = 0;
+    [Tooltip("delay for dash preshot [m]")]
     public float dashChainDelay = 0f;
+    [Tooltip("activation window for quickstep [s]")]
+    public float quickstepDelay = 0f;
+    public float quickStepMaxSpeed = 0f;
+    public float quickStepMinSpeed = 0f;
+    public float quickstepLenght = 0f;
 
     int remainingDashes = 0;
     float dashRecoveryTimer = 0f;
     bool dashing = false;
+    bool quickstepping = false;
     bool dashChain = false;
     Vector3 mouseWorldPos;
     float dashingLenght = 0f;
-    Vector3 dashDirection;
+    float quicksteppingLenght = 0f;
+    Vector2 dashDirection;
     Rigidbody2D body;
+    Vector2 quickstepDirection;
+    float quickstepUpTimer = 0f;
+    float quickstepDownTimer = 0f;
+    float quickstepLeftTimer = 0f;
+    float quickstepRightTimer = 0f;
 
     void Start() {
         body = gameObject.GetComponent<Rigidbody2D>();
@@ -28,25 +47,37 @@ public class controls : MonoBehaviour
 
     void OnDrawGizmos() 
     {
-        Debug.DrawLine(transform.position, mouseWorldPos, Color.magenta);
-        Debug.DrawRay(transform.position, dashDirection * -dashLenght, Color.green);
+        if (dashing || quickstepping) {
+            Gizmos.color = Color.magenta;
+        } else {
+            Gizmos.color = Color.green;
+        }
+        Gizmos.DrawRay(transform.position, dashDirection * -dashLenght);
+        Gizmos.color = Color.magenta;
+        if (dashing) {
+            Gizmos.color = Color.green;
+        } else if (quickstepping) {
+            Gizmos.color = Color.blue;
+        }
+        Gizmos.DrawWireSphere(transform.position, quickstepLenght);
     }
 
     void Update()
     {
+        float moveX = Input.GetAxis("Horizontal");
+        float moveY = Input.GetAxis("Vertical");
         //get mouse poss in world
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = Camera.main.nearClipPlane;
+        Vector2 mousePos = Input.mousePosition;
         mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
 
         //walk movement
-        if (!dashing) {
-            Vector2 tmp = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")).normalized;
+        if (!dashing && !quickstepping) {
+            Vector2 tmp = new Vector2(moveX, moveY).normalized;
             body.velocity = tmp * walkSpeed;
         }
     
         //dash motion
-        if (dashing) {
+        if (dashing && !quickstepping) {
             float curentSpeed = (Mathf.Pow(Mathf.Cos(dashingLenght*Mathf.PI/2*dashLenght),2)*(dashMaxSpeed-dashMinSpeed))+dashMinSpeed;
             body.velocity = -dashDirection*curentSpeed;
             dashingLenght += (-dashDirection*curentSpeed).magnitude * Time.deltaTime;
@@ -56,7 +87,7 @@ public class controls : MonoBehaviour
         }
 
         //dash activation
-        if (Input.GetButtonDown("Jump") && remainingDashes > 0){
+        if (Input.GetButtonDown("Jump") && remainingDashes > 0 && !quickstepping){
             if (!dashing) {
                 dashing = true;
                 remainingDashes -= 1;
@@ -84,6 +115,61 @@ public class controls : MonoBehaviour
                 dashRecoveryTimer = 0f;
             }
             dashRecoveryTimer += Time.deltaTime;
+        }
+
+        //quickstep start
+        if (moveY > 0 && !quickstepping) {
+            if (quickstepUpTimer < quickstepDelay && quickstepUpTimer > 0) {
+                quickstepDirection = new Vector2(0, 1);
+                quickstepping = true;
+            }
+            quickstepUpTimer = quickstepDelay;
+        } else if (quickstepUpTimer > 0) {
+            quickstepUpTimer -= Time.deltaTime;
+        }
+
+        if (moveY < 0 && !quickstepping) {
+            if (quickstepDownTimer < quickstepDelay && quickstepDownTimer > 0) {
+                quickstepDirection = new Vector2(0, -1);
+                quickstepping = true;
+            }
+            quickstepDownTimer = quickstepDelay;
+        } else if (quickstepDownTimer > 0) {
+            quickstepDownTimer -= Time.deltaTime;
+        }
+
+        if (moveX > 0 && !quickstepping) {
+            if (quickstepLeftTimer < quickstepDelay && quickstepLeftTimer > 0) {
+                quickstepDirection = new Vector2(1, 0);
+                quickstepping = true;
+            }
+            quickstepLeftTimer = quickstepDelay;
+        } else if (quickstepLeftTimer > 0) {
+            quickstepLeftTimer -= Time.deltaTime;
+        }
+
+        if (moveX < 0 && !quickstepping) {
+            if (quickstepRightTimer < quickstepDelay && quickstepRightTimer > 0) {
+                quickstepDirection = new Vector2(-1, 0);
+                quickstepping = true;
+            }
+            quickstepRightTimer = quickstepDelay;
+        } else if (quickstepRightTimer > 0) {
+            quickstepRightTimer -= Time.deltaTime;
+        }
+
+        //quickstep move
+        if (quickstepping) {
+            float curentSpeed = (Mathf.Pow(Mathf.Cos(quicksteppingLenght*Mathf.PI/2*quickstepLenght),2)*(quickStepMaxSpeed-quickStepMinSpeed))+quickStepMinSpeed;
+            body.velocity = quickstepDirection*curentSpeed;
+            quicksteppingLenght += (quickstepDirection*curentSpeed).magnitude * Time.deltaTime;
+            Debug.Log(quicksteppingLenght);
+        }
+
+        //quickstep stop
+        if (quickstepping && quicksteppingLenght >= quickstepLenght) {
+            quicksteppingLenght = 0;
+            quickstepping = false;
         }
     }
 }

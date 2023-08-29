@@ -292,6 +292,10 @@ MonoBehaviour:
   dashRecovery: 0.5
   dashMaxNumber: 4
   dashChainDelay: 10
+  quickstepDelay: 0.5
+  quickStepMaxSpeed: 55
+  quickStepMinSpeed: 35
+  quickstepLenght: 2
 --- !u!50 &285358537
 Rigidbody2D:
   serializedVersion: 4
@@ -416,7 +420,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 519420032}
@@ -1345,7 +1349,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.76, y: -2.06, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
