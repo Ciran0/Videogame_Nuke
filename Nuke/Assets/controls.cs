@@ -170,6 +170,10 @@ public class controls : MonoBehaviour
         if (quickstepping && quicksteppingLenght >= quickstepLenght) {
             quicksteppingLenght = 0;
             quickstepping = false;
+            quickstepUpTimer = 0;
+            quickstepDownTimer = 0;
+            quickstepLeftTimer = 0;
+            quickstepRightTimer = 0;
         }
     }
 }
