@@ -21,9 +21,13 @@ public class controls : MonoBehaviour
     public float dashChainDelay = 0f;
     [Tooltip("activation window for quickstep [s]")]
     public float quickstepDelay = 0f;
+    [Tooltip("initial speed of quickstep [m/s]")]
     public float quickStepMaxSpeed = 0f;
+    [Tooltip("end quickstep speed [m/s]")]
     public float quickStepMinSpeed = 0f;
+    [Tooltip("lenght of quickstep [m]")]
     public float quickstepLenght = 0f;
+    [Tooltip("quickstep recovery time [s]")]
     public float quickstepCooldown = 0f;
 
     int remainingDashes = 0;
